@@ -1,25 +1,140 @@
-<div
-  data-section-type="featured-products"
-  data-section-id="{{ section.id }}"
->
-  <!-- Slider main container -->
-  <div class="swiper">
-    <!-- Additional required wrapper -->
-    <div class="swiper-wrapper">
-      <!-- Slides -->
-      <div class="swiper-slide">Slide 1</div>
-      <div class="swiper-slide">Slide 2</div>
-      <div class="swiper-slide">Slide 3</div>
+{% style %}
+  #shopify-section-{{ section.id }} .paddings {
+    padding-top: {{ section.settings.padding_mob_t }}px;
+    padding-bottom: {{ section.settings.padding_mob_b }}px;
+  }
+
+  @media (min-width: 768px) {
+    #shopify-section-{{ section.id }} .paddings {
+      padding-top: {{ section.settings.padding_dsk_t }}px;
+      padding-bottom: {{ section.settings.padding_dsk_b }}px;
+    }
+  }
+{% endstyle %}
+
+{% if section.settings.products.count > 0 %}
+  <div
+    data-section-type="featured-products"
+    data-section-id="{{ section.id }}"
+    class="relative overflow-hidden"
+  >
+    {% if section.settings.bg_img != blank %}
+      {{-
+        section.settings.bg_img
+        | image_url: width: 1440
+        | image_tag: class: 'absolute inset-x-0 top-0', loading: 'lazy'
+      -}}
+    {% endif %}
+    <div class="paddings relative space-y-16 sm:space-y-8 px-4 md:px-10">
+      {% if section.settings.heading_dsk != blank
+        and section.settings.heading_mob != blank
+      %}
+        <h2
+          class="
+            text-center font-adorn-condensed-sans text-4.5xl sm:text-6.5xl uppercase leading-none
+            text-raisinBlack [&_em]:not-italic [&_em]:text-white [&_em]:[text-shadow:4px_1px_0_#242323]
+          "
+        >
+          <span class="hidden md:inline">
+            {{- section.settings.heading_dsk -}}
+          </span>
+          <span class="md:hidden">{{- section.settings.heading_mob -}}</span>
+        </h2>
+      {% endif %}
+      <div class="swiper">
+        <div class="swiper-wrapper sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-6 lg:gap-8">
+          {% for product in section.settings.products %}
+            <div class="swiper-slide !h-auto sm:!transform-none sm:!w-auto sm:!opacity-100">
+              {% render 'product-card', product: product, class: 'h-full' %}
+            </div>
+          {% endfor %}
+        </div>
+        <div class="swiper-pagination sm:hidden"></div>
+      </div>
     </div>
-    <!-- If we need pagination -->
-    <div class="swiper-pagination"></div>
   </div>
-</div>
+{% endif %}
 
 {% schema %}
   {
     "name": "Featured Products",
     "tag": "section",
+    "settings": [
+      {
+        "type": "header",
+        "content": "📐 Layout (Desktop)"
+      },
+      {
+        "type": "range",
+        "id": "padding_dsk_t",
+        "min": 0,
+        "max": 200,
+        "step": 4,
+        "default": 56,
+        "unit": "px",
+        "label": "Top Padding (Desktop)"
+      },
+      {
+        "type": "range",
+        "id": "padding_dsk_b",
+        "min": 0,
+        "max": 200,
+        "step": 4,
+        "default": 40,
+        "unit": "px",
+        "label": "Bottom Padding (Desktop)"
+      },
+      {
+        "type": "header",
+        "content": "📐 Layout (Mobile)"
+      },
+      {
+        "type": "range",
+        "id": "padding_mob_t",
+        "min": 0,
+        "max": 200,
+        "step": 4,
+        "default": 72,
+        "unit": "px",
+        "label": "Top Padding (Mobile)"
+      },
+      {
+        "type": "range",
+        "id": "padding_mob_b",
+        "min": 0,
+        "max": 200,
+        "step": 4,
+        "default": 88,
+        "unit": "px",
+        "label": "Bottom Padding (Mobile)"
+      },
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "image_picker",
+        "id": "bg_img",
+        "label": "Background Image"
+      },
+      {
+        "type": "inline_richtext",
+        "id": "heading_dsk",
+        "label": "Heading (Desktop)",
+        "default": "Featured Products"
+      },
+      {
+        "type": "inline_richtext",
+        "id": "heading_mob",
+        "label": "Heading (Mobile)",
+        "default": "Featured Products"
+      },
+      {
+        "type": "product_list",
+        "id": "products",
+        "label": "Products"
+      }
+    ],
     "presets": [
       {
         "name": "Featured Products"

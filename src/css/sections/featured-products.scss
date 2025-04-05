@@ -1,2 +1,12 @@
-[data-section-type="featured-products"] {
+[data-section-type="featured-products"] .swiper-pagination {
+  position: static;
+  margin-top: 20px;
+  line-height: 1;
+  --swiper-pagination-bullet-horizontal-gap: 4px;
+  --swiper-pagination-bullet-size: 10px;
+  --swiper-pagination-color: #FFD11F;
+  --swiper-pagination-bullet-inactive-color: #E3E3E3;
+  --swiper-pagination-bullet-inactive-opacity: 1;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }

@@ -1,4 +1,4 @@
 [environments.dev]
-store = ""
+store = "npr-test"
 path = "."
 theme-editor-sync = true

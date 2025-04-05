@@ -5,6 +5,7 @@
 @import "tailwindcss/components";
 @layer components {
   @import "@/css/snippets/site-logo.scss";
+  @import "@/css/snippets/button.scss";
   @import "@/css/sections/header.scss";
   @import "@/css/sections/featured-products.scss";
 }

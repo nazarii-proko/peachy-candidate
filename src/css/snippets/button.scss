@@ -1,0 +1,25 @@
+.btn-primary {
+  transition: all 0.1s ease-in-out;
+  border: 2px solid #242323;
+  border-radius: 2px;
+  background-color: #ffd11f;
+  padding: 20px 32px;
+  color: #242323;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1;
+  font-family: "Futura PT";
+  letter-spacing: 12%;
+  text-align: center;
+  text-transform: uppercase;
+
+  &:hover{
+    transform: translate(-0.25rem, -0.25rem);
+    box-shadow: 0.25rem 0.25rem 0 #242323;
+  }
+
+  &:active {
+    transform: translate(-0.1rem, -0.1rem);
+    box-shadow: 0.1rem 0.1rem 0 #242323;
+  }
+}

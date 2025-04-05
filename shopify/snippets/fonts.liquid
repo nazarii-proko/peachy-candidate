@@ -1,4 +1,5 @@
 {{ 'AdornCondensedSans.static.otf' | asset_url | preload_tag: as: 'font' }}
+{{ 'FuturaPTDemi.static.otf' | asset_url | preload_tag: as: 'font' }}
 
 {% style %}
   @font-face {
@@ -7,6 +8,15 @@
     font-weight: 400;
     src: local('Adorn Condensed Sans'),
       url("{{ 'AdornCondensedSans.static.otf' | asset_url }}")
+        format('opentype');
+  }
+
+  @font-face {
+    font-family: 'Futura PT';
+    font-display: swap;
+    font-weight: 500;
+    src: local('Futura PT'),
+      url("{{ 'FuturaPTDemi.static.otf' | asset_url }}")
         format('opentype');
   }
 {% endstyle %}

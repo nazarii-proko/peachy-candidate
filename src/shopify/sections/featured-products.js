@@ -1,10 +1,12 @@
-import Swiper, { Autoplay, Pagination } from "swiper";
+import Swiper from "swiper";
+import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/pagination";
+import "swiper/css/effect-fade";
 
-import "@/shopify/snippets/variant-swatch";
+import "@/shopify/snippets/product-card";
 
 const FeaturedProducts = {
   onLoad() {
@@ -12,18 +14,30 @@ const FeaturedProducts = {
   },
 
   _init() {
-    this.sliderWrapper = this.container.querySelector(".swiper");
-    if (!this.sliderWrapper) return;
+    const swiper = this.container.querySelector(".swiper");
+    if (!swiper) return;
 
-    this.slider = new Swiper(this.sliderWrapper, {
+    const pagination = swiper.querySelector(".swiper-pagination");
+    new Swiper(swiper, {
       slidesPerView: 1,
-      autoplay: true,
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: true
+      },
+      speed: 300,
+      modules: [Autoplay, Pagination, EffectFade],
       pagination: {
-        el: ".swiper-pagination",
-        type: "bullets",
+        el: pagination,
         clickable: true,
       },
-      modules: [Autoplay, Pagination],
+      effect: "fade",
+      breakpoints: {
+        autoplay: false,
+        640: {
+          effect: "slide",
+          enabled: false
+        }
+      },
     });
   },
 };

@@ -1,13 +1,36 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main-index": {
       "type": "main-index",
-      "settings": {
-      }
+      "settings": {}
     },
     "1d2f5b0d-e932-4cac-9a2d-4c348a75e38e": {
       "type": "featured-products",
       "settings": {
+        "padding_dsk_t": 56,
+        "padding_dsk_b": 40,
+        "padding_mob_t": 72,
+        "padding_mob_b": 88,
+        "bg_img": "shopify://shop_images/13105_1.png",
+        "heading_dsk": "Our best sellers",
+        "heading_mob": "Our best <em>sellers</em>",
+        "products": [
+          "pre-order",
+          "bowtie-product-rich-media",
+          "enamel-pin",
+          "no-product-image",
+          "rte-test",
+          "image-aspect-ratio"
+        ]
       }
     }
   },

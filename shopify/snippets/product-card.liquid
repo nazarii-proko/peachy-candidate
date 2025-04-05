@@ -1,0 +1,81 @@
+{% liquid
+  assign available_variants = product.variants | where: 'available'
+  assign available_variant_ids = available_variants | map: 'id'
+  assign available_variant_titles = available_variants | map: 'title'
+%}
+
+<product-card
+  class="flex flex-col gap-5 rounded-xl border-4 border-solid border-mistyRose bg-lavenderBlush p-5 {{ class }}"
+>
+  <script type="application/json" class="js-variants-json">
+    {
+      {% for variant in available_variants %}
+        "{{ variant.id }}": {
+          "price": "{{ variant.price }}",
+          "compareAtPrice": {{ variant.compare_at_price }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    }
+  </script>
+  <a
+    href="{{ product.url }}"
+    class="block w-full aspect-square rounded-lg overflow-hidden"
+  >
+    {% if product.featured_image != blank %}
+      {{-
+        product.featured_image
+        | image_url: width: 1440
+        | image_tag: class: 'size-full object-cover', loading: 'lazy'
+      -}}
+    {% else %}
+      {{- 'product-1' | placeholder_svg_tag: 'size-full object-cover' -}}
+    {% endif %}
+  </a>
+  <p class="text-center font-adorn-condensed-sans text-3xl uppercase leading-none text-raisinBlack">
+    <a href="{{ product.url }}">{{- product.title -}}</a>
+  </p>
+
+  {% if available_variant_ids.size == 1 %}
+    <input
+      type="hidden"
+      name="variant-id"
+      value="{{ product.selected_or_first_available_variant.id }}"
+    >
+  {% elsif available_variant_ids.size > 1 %}
+    {%- render 'dropdown',
+      values: available_variant_ids,
+      labels: available_variant_titles,
+      name: 'variant-id'
+    -%}
+  {% endif %}
+  <div class="mt-auto">
+    <button
+      aria-disabled="{% if product.selected_or_first_available_variant.available %}false{% else %}true{% endif %}"
+      type="button"
+      class="js-atc-button group/button aria-disabled:pointer-events-none btn-primary w-full mt-1"
+    >
+      <span class="js-price group-aria-disabled/button:hidden">
+        {{-
+          product.selected_or_first_available_variant.price
+          | money_with_currency
+        -}}
+      </span>
+      <span
+        aria-hidden="{% if product.selected_or_first_available_variant.price >= product.compare_at_price %}true{% else %}false{% endif %}"
+        class="js-compare-at-price line-through aria-hidden:hidden group-aria-disabled/button:hidden"
+      >
+        {{-
+          product.selected_or_first_available_variant.compare_at_price
+          | money_with_currency
+        -}}
+      </span>
+      <span class="group-aria-disabled/button:hidden">-</span>
+      <span class="group-aria-disabled/button:hidden">
+        {{- 'action.add_to_cart' | t -}}
+      </span>
+      <span class="hidden group-aria-disabled/button:inline">
+        {{- 'common.sold_out' | t -}}
+      </span>
+    </button>
+  </div>
+</product-card>
