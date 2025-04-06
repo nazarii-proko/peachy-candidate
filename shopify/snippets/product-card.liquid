@@ -1,7 +1,14 @@
 {% liquid
+  assign selected_variant = product.first_available_variant
+
   assign available_variants = product.variants | where: 'available'
   assign available_variant_ids = available_variants | map: 'id'
   assign available_variant_titles = available_variants | map: 'title'
+
+  assign featured_images = available_variants | map: 'featured_image' | uniq
+  if featured_images.size == 0
+    assign featured_images = product.featured_image | compact
+  endif
 %}
 
 <product-card
@@ -11,22 +18,36 @@
     {
       {% for variant in available_variants %}
         "{{ variant.id }}": {
-          "price": "{{ variant.price }}",
-          "compareAtPrice": {{ variant.compare_at_price }}
+          "price": {{ variant.price }},
+          "compareAtPrice": {{ variant.compare_at_price | default: 0 }},
+          "imagePosition": {{ variant.featured_image.position | default: product.featured_image.position }}
         }{% unless forloop.last %},{% endunless %}
       {% endfor %}
     }
   </script>
   <a
     href="{{ product.url }}"
-    class="block w-full aspect-square rounded-lg overflow-hidden"
+    class="relative block aspect-square w-full overflow-hidden rounded-lg"
   >
-    {% if product.featured_image != blank %}
-      {{-
-        product.featured_image
-        | image_url: width: 1440
-        | image_tag: class: 'size-full object-cover', loading: 'lazy'
-      -}}
+    {%- assign selected_variant_image_position = selected_variant.featured_image.position
+      | default: product.featured_image.position
+    -%}
+    {% if featured_images.size > 0 %}
+      {% for image in featured_images %}
+        {% if image.position == selected_variant_image_position %}
+          {%- assign selected_image = 'true' -%}
+        {% else %}
+          {%- assign selected_image = 'false' -%}
+        {% endif %}
+        {{-
+          image
+          | image_url: width: 1440
+          | image_tag:
+            class: 'js-product-img absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-300 aria-selected:opacity-100',
+            loading: 'lazy',
+            aria-selected: selected_image
+        -}}
+      {% endfor %}
     {% else %}
       {{- 'product-1' | placeholder_svg_tag: 'size-full object-cover' -}}
     {% endif %}
@@ -35,39 +56,35 @@
     <a href="{{ product.url }}">{{- product.title -}}</a>
   </p>
 
-  {% if available_variant_ids.size == 1 %}
-    <input
-      type="hidden"
-      name="variant-id"
-      value="{{ product.selected_or_first_available_variant.id }}"
-    >
-  {% elsif available_variant_ids.size > 1 %}
-    {%- render 'dropdown',
-      values: available_variant_ids,
-      labels: available_variant_titles,
-      name: 'variant-id'
-    -%}
-  {% endif %}
-  <div class="mt-auto">
+  <div class="mt-auto space-y-6">
+    {% if available_variant_ids.size == 1 %}
+      <input
+        type="hidden"
+        name="variant-id"
+        value="{{ selected_variant.id }}"
+      >
+    {% elsif available_variant_ids.size > 1 %}
+      {%- render 'dropdown',
+        values: available_variant_ids,
+        labels: available_variant_titles,
+        initial_value: selected_variant.id,
+        initial_label: selected_variant.title,
+        name: 'variant-id'
+      -%}
+    {% endif %}
     <button
-      aria-disabled="{% if product.selected_or_first_available_variant.available %}false{% else %}true{% endif %}"
+      aria-disabled="{% if selected_variant.available %}false{% else %}true{% endif %}"
       type="button"
-      class="js-atc-button group/button aria-disabled:pointer-events-none btn-primary w-full mt-1"
+      class="js-atc-button group/button aria-disabled:pointer-events-none btn-primary w-full"
     >
       <span class="js-price group-aria-disabled/button:hidden">
-        {{-
-          product.selected_or_first_available_variant.price
-          | money_with_currency
-        -}}
+        {{- selected_variant.price | money_with_currency -}}
       </span>
       <span
-        aria-hidden="{% if product.selected_or_first_available_variant.price >= product.compare_at_price %}true{% else %}false{% endif %}"
+        aria-hidden="{% if selected_variant.price >= product.compare_at_price %}true{% else %}false{% endif %}"
         class="js-compare-at-price line-through aria-hidden:hidden group-aria-disabled/button:hidden"
       >
-        {{-
-          product.selected_or_first_available_variant.compare_at_price
-          | money_with_currency
-        -}}
+        {{- selected_variant.compare_at_price | money_with_currency -}}
       </span>
       <span class="group-aria-disabled/button:hidden">-</span>
       <span class="group-aria-disabled/button:hidden">

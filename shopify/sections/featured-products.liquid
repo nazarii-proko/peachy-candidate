@@ -44,7 +44,7 @@
       <div class="swiper">
         <div class="swiper-wrapper sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-6 lg:gap-8">
           {% for product in section.settings.products %}
-            <div class="swiper-slide !h-auto sm:!transform-none sm:!w-auto sm:!opacity-100">
+            <div class="swiper-slide !h-auto sm:!transform-none sm:!w-auto sm:!opacity-100 sm:!pointer-events-auto">
               {% render 'product-card', product: product, class: 'h-full' %}
             </div>
           {% endfor %}

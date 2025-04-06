@@ -34,7 +34,6 @@ class ProductCard extends HTMLElement {
   }
 
   _onVariantChange(e) {
-    console.log("change");
     if (!this._compareAtPrice) {
       this._compareAtPrice = this.querySelector(".js-compare-at-price");
     }
@@ -43,6 +42,7 @@ class ProductCard extends HTMLElement {
     }
 
     const variant = this.variantsJson[e.target.value];
+    this.selectedImage = variant.imagePosition;
     if (variant.compareAtPrice >= variant.price) {
       this._compareAtPrice.innerHTML = window.Shopify.formatMoney(
         variant.compareAtPrice
@@ -65,6 +65,40 @@ class ProductCard extends HTMLElement {
       );
     }
     return this._variantsJson;
+  }
+
+  get images() {
+    if (!this._images) {
+      this._images = this.querySelectorAll(".js-product-img");
+    }
+    return this._images;
+  }
+
+  get selectedImage() {
+    if (!this._selectedImage) {
+      this._selectedImagePosition0 = Array.from(this.images).findIndex(
+        (image) => image.getAttribute("aria-selected") === "true"
+      );
+      this._selectedImage = this.images[this._selectedImagePosition0];
+    }
+
+    return this._selectedImage;
+  }
+
+  set selectedImage(position) {
+    const position0 = position - 1;
+    if (
+      position0 >= 0 &&
+      position0 < this.images.length &&
+      position0 !== this._selectedImagePosition0
+    ) {
+      this.selectedImage.setAttribute("aria-selected", "false");
+      this._selectedImagePosition0 = position0;
+      this._selectedImage = this.images[position0];
+      this._selectedImage.setAttribute("aria-selected", "true");
+    } else {
+      console.error(`There is no image with position: ${position}`);
+    }
   }
 }
 
