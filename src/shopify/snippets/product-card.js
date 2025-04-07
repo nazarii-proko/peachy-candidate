@@ -87,11 +87,13 @@ class ProductCard extends HTMLElement {
 
   set selectedImage(position) {
     const position0 = position - 1;
-    if (
-      position0 >= 0 &&
-      position0 < this.images.length &&
-      position0 !== this._selectedImagePosition0
-    ) {
+
+    if (position0 === this._selectedImagePosition0) {
+      console.warn(`The image with position: ${position} is already selected.`);
+      return;
+    }
+
+    if (position0 >= 0 && position0 < this.images.length) {
       this.selectedImage.setAttribute("aria-selected", "false");
       this._selectedImagePosition0 = position0;
       this._selectedImage = this.images[position0];
